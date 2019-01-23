@@ -1,7 +1,5 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
-import { Component, Input, Directive, ElementRef, Output, EventEmitter, NgModule } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Component, Directive, ElementRef, Output, Input, EventEmitter, NgModule } from '@angular/core';
 
 /**
  * @fileoverview added by tsickle
@@ -47,7 +45,7 @@ class AppComponent {
 AppComponent.decorators = [
     { type: Component, args: [{
                 selector: 'my-app',
-                template: "<hello name=\"{{ name }}\"></hello>\n<p view-more  viewHeight=\"60\" (showMore)=\"showMore($event)\" > \n  A directive allows you to attach a behavior to DOM elements. This behavior could be as simple or as complex as you\u2019d like.*ngFor and *ngIf are examples of built-in directives in Angular. In this article, I will show you how to make a custom Google place autocomplete directive that you can attach to any text input.\n  A directive allows you to attach a behavior to DOM elements. This behavior could be as simple or as complex as you\u2019d like.*ngFor and *ngIf are examples of built-in directives in Angular. In this article, I will show you how to make a custom Google place autocomplete directive that you can attach to any text input.\n  A directive allows you to attach a behavior to DOM elements. This behavior could be as simple or as complex as you\u2019d like.*ngFor and *ngIf are examples of built-in directives in Angular. In this article, I will show you how to make a custom Google place autocomplete directive that you can attach to any text input.\n  A directive allows you to attach a behavior to DOM elements. This behavior could be as simple or as complex as you\u2019d like.*ngFor and *ngIf are examples of built-in directives in Angular. In this article, I will show you how to make a custom Google place autocomplete directive that you can attach to any text input.\n</p>\n",
+                template: "<p view-more  viewHeight=\"60\" (showMore)=\"showMore($event)\" > \n  A directive allows you to attach a behavior to DOM elements. This behavior could be as simple or as complex as you\u2019d like.*ngFor and *ngIf are examples of built-in directives in Angular. In this article, I will show you how to make a custom Google place autocomplete directive that you can attach to any text input.\n  A directive allows you to attach a behavior to DOM elements. This behavior could be as simple or as complex as you\u2019d like.*ngFor and *ngIf are examples of built-in directives in Angular. In this article, I will show you how to make a custom Google place autocomplete directive that you can attach to any text input.\n  A directive allows you to attach a behavior to DOM elements. This behavior could be as simple or as complex as you\u2019d like.*ngFor and *ngIf are examples of built-in directives in Angular. In this article, I will show you how to make a custom Google place autocomplete directive that you can attach to any text input.\n  A directive allows you to attach a behavior to DOM elements. This behavior could be as simple or as complex as you\u2019d like.*ngFor and *ngIf are examples of built-in directives in Angular. In this article, I will show you how to make a custom Google place autocomplete directive that you can attach to any text input.\n</p>\n",
                 styles: ["p{font-family:Lato}"]
             }] }
 ];
@@ -55,23 +53,6 @@ AppComponent.decorators = [
 AppComponent.ctorParameters = () => [
     { type: HttpClient }
 ];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
- */
-class HelloComponent {
-}
-HelloComponent.decorators = [
-    { type: Component, args: [{
-                selector: 'hello',
-                template: `<h1>Hello {{name}}!</h1>`,
-                styles: [`h1 { font-family: Lato; }`]
-            }] }
-];
-HelloComponent.propDecorators = {
-    name: [{ type: Input }]
-};
 
 /**
  * @fileoverview added by tsickle
@@ -85,9 +66,17 @@ class ViewMoreDirective {
         this.elRef = elRef;
         this.showMore = new EventEmitter();
         this.toggleShowMore = false;
+        this.isInsertedViewMoreBtn = false;
         //elRef will get a reference to the element where
         //the directive is placed
         this.element = elRef.nativeElement;
+    }
+    /**
+     * @param {?} changes
+     * @return {?}
+     */
+    ngOnChanges(changes) {
+        // console.log('changes',changes);
     }
     /**
      * @return {?}
@@ -98,9 +87,9 @@ class ViewMoreDirective {
     /**
      * @return {?}
      */
-    ngAfterViewInit() {
+    ngAfterViewChecked() {
         this.actualHeight = this.element.offsetHeight + 10;
-        if (this.element.offsetHeight > this.viewHeight) {
+        if (!this.isInsertedViewMoreBtn && (this.element.offsetHeight > this.viewHeight)) {
             /** @type {?} */
             let btnName = 'view More...';
             console.log('height equal');
@@ -117,13 +106,7 @@ class ViewMoreDirective {
             span.setAttribute('style', 'cursor:pointer;');
             this.element.parentNode.insertBefore(para, this.element.nextSibling);
             this.toggleEventOnViewMore(span);
-            setTimeout(() => {
-                this.showMore.emit(true);
-            }, 1000);
-        }
-        else {
-            console.log('height not equal');
-            this.showMore.emit(false);
+            this.isInsertedViewMoreBtn = true;
         }
     }
     /**
@@ -152,12 +135,14 @@ class ViewMoreDirective {
                 this.element.classList.remove("view_more");
                 document.getElementById('text_view').innerHTML = 'view more...';
                 this.toggleShowMore = !this.toggleShowMore;
+                this.showMore.emit(false);
             }
             else {
                 console.log('viewmore');
                 document.getElementById('text_view').innerHTML = 'view less...';
                 this.element.classList.add("view_more");
                 this.toggleShowMore = !this.toggleShowMore;
+                this.showMore.emit(true);
             }
         });
     }
@@ -165,7 +150,9 @@ class ViewMoreDirective {
      * @return {?}
      */
     ngOnDestroy() {
-        document.getElementById('style_view_more').remove();
+        if (document.getElementById('style_view_more')) {
+            document.getElementById('style_view_more').remove();
+        }
     }
 }
 ViewMoreDirective.decorators = [
@@ -190,8 +177,8 @@ class AppModule {
 }
 AppModule.decorators = [
     { type: NgModule, args: [{
-                imports: [BrowserModule, FormsModule, HttpClientModule],
-                declarations: [AppComponent, HelloComponent, ViewMoreDirective],
+                imports: [],
+                declarations: [AppComponent, ViewMoreDirective],
                 bootstrap: [AppComponent],
                 exports: [ViewMoreDirective]
             },] }
@@ -212,6 +199,6 @@ AppModule.decorators = [
  * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
  */
 
-export { AppModule as ViewMoreDirectiveModule, AppComponent as ɵa, HelloComponent as ɵb, ViewMoreDirective as ɵc };
+export { AppModule as ViewMoreDirectiveModule, AppComponent as ɵa, ViewMoreDirective as ɵb };
 
 //# sourceMappingURL=view-more-directive.js.map
